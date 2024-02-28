@@ -38,7 +38,7 @@ userSchema.pre('save', async function(next) {
     next();
 });
 
-function socialsLimit(val) {
+function socialsLimit(val: Array<string>) {
     return val.length <= 5;
   }
 
