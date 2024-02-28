@@ -7,15 +7,17 @@ import dbConnect from './db/connection';
 import { userRouter, eventRouter } from './routes';
 
 const app = express();
-app.use(express.json());
 app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200
 })); // TODO: SPECIFY ORIGINS
-app.use(bodyParser.json());
+app.use(bodyParser.json);
 app.use('/explorer', docsRouter)
 app.use('/user', userRouter);
 app.use('/event', eventRouter);
+app.use((req, res) => {
+    res.status(404).send('Page not found');
+  });
 app.set('view engine', 'ejs');
 dotenv.config();
 dbConnect()
@@ -28,5 +30,10 @@ app.listen(APP_PORT, APP_IP, function () {
 });
 
 app.get('/', (req, res) => {
-    return res.render('index.ejs');
+    try {
+        console.log("loading page");
+        return res.render('index.ejs');
+    } catch (err) {
+        console.error(err.message);
+    }
 });

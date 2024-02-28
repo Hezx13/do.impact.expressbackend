@@ -1,3 +1,5 @@
+/// <reference types="../types.d.ts" />
+
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Router, Request, Response } from 'express';
@@ -17,6 +19,7 @@ class UserController {
     this.router.post('/register', this.registerUser.bind(this));
     this.router.post('/login', this.loginUser.bind(this));
     this.router.put('/', authMiddleware, this.updateUser.bind(this));
+    this.router.get('/role', authMiddleware, this.getRole.bind(this));
   }
 
   @LogRoute('HTTP Request')
@@ -67,7 +70,7 @@ class UserController {
       }
 
       // Access token
-      const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '7d' });
+      const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: '7d' });
 
       return res.status(200).send({ token });
     } catch (err: any) {
@@ -78,9 +81,22 @@ class UserController {
   @LogRoute('HTTP Request')
   async updateUser(req: Request, res: Response) {
     try {
-      // Your update logic here
+      const {id} = req.params;
+      if (id && req.user.role !== 'admin') {
+
+      }
     } catch (err: any) {
       console.error(err.message)
+    }
+  }
+
+  @LogRoute('HTTP Request')
+  async getRole(req: Request,res: Response) {
+    try {
+        return res.status(200).json(req.user.role);
+    } catch (err: any) {
+      console.error(err.message)
+      return res.status(500)
     }
   }
 }

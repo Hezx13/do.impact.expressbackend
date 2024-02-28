@@ -1,6 +1,15 @@
 {
     "compilerOptions": {
       "experimentalDecorators": true,
-      "esModuleInterop": true
-    }
+      "esModuleInterop": true,
+      "target": "ESNext",
+      "module": "commonjs"
+    },
+    "include": [
+      "db/**/*",
+      "routes/**/*",
+      "utils/**/*",
+      "*.ts",
+      "types.d.ts"
+    ]
   }
