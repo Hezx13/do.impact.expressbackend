@@ -104,3 +104,4 @@ dist
 # TernJS port file
 .tern-port
 fullstack-react-with-typescript_1.pdf
+package-lock.json
