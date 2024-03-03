@@ -6,6 +6,7 @@ import { Router, Request, Response } from 'express';
 import { User } from '../db/models';
 import { authMiddleware } from './middleware';
 import LogRoute from '../utils/decorators';
+import { access } from 'fs';
 
 class UserController {
   public router = Router();
@@ -81,9 +82,27 @@ class UserController {
   async updateUser(req: Request, res: Response) {
     try {
       const {id} = req.params;
-      if (id && req.user.role !== 'admin') {
-        
+      const { email,name, socials } = req.body;
+        let update: UserUpdate = {};
+        if (email) update.email = email;
+        if (name) update.name = name;
+        if (socials) update.socials = socials;
+      if (id) {
+        if (req.user.role !== 'admin'){
+          return res.status(403).send("Not enough priviliges")
+        }
+        const user = await User.findByIdAndUpdate(id, update, { new: true });
+        if (!user) {
+          return res.status(404).send('User not found');
+        }
+        return res.status(200).json(user);
       }
+      const user = await User.findByIdAndUpdate(req.user.id, update, { new: true });
+      if (!user) {
+        return res.status(404).send('User not found');
+      }
+      return res.status(200).json(user);
+
     } catch (err: any) {
       console.error(err.message)
     }
