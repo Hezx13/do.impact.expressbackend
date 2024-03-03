@@ -1,10 +1,3 @@
-openapi: 3.0.0
-info:
-  title: User API
-  version: 1.0.0
-  description: API for managing users
-servers:
-  - url: http://localhost:4501
 paths:
   /user/register:
     post:
@@ -75,6 +68,68 @@ paths:
           description: User does not exist
         '401':
           description: Wrong password
+        '500':
+          description: Internal server error
+  /user/{id}:
+    put:
+      tags:
+        - user
+      summary: Update user
+      security:
+        - bearerAuth: []
+      parameters:  # Define path parameters here
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The user ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+                socials:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: User updated
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /user/role:
+    get:
+      tags:
+        - user
+      summary: Get user role
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Role returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  role:
+                    type: string
+        '400':
+          description: User does not exist
+        '401':
+          description: token expired
         '500':
           description: Internal server error
 components:

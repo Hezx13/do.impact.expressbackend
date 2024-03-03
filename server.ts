@@ -11,13 +11,11 @@ app.use(cors({
     origin: '*',
     optionsSuccessStatus: 200
 })); // TODO: SPECIFY ORIGINS
-app.use(bodyParser.json);
+app.use(bodyParser.json());
 app.use('/explorer', docsRouter)
 app.use('/user', userRouter);
 app.use('/event', eventRouter);
-app.use((req, res) => {
-    res.status(404).send('Page not found');
-  });
+
 app.set('view engine', 'ejs');
 dotenv.config();
 dbConnect()
@@ -37,3 +35,7 @@ app.get('/', (req, res) => {
         console.error(err.message);
     }
 });
+
+app.use((req, res) => {
+    res.status(404).send('Page not found');
+  });

@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => { 
     const SECRET_KEY = process.env.SECRET_KEY || 'generic'
     try {
+        const aut = req.headers.authorization
         const token = req.headers.authorization?.split(' ')[1];
         if (!token) return res.status(401).send('Access denied. No token provided.');
 
@@ -10,7 +11,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
         req.user = decoded as { id: string, role: string };
         next();
     } catch (error) {
-        res.status(400).send('Invalid token.');
+        res.status(401).send('Invalid token.');
     }
 };
 

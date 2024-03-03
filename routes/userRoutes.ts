@@ -18,7 +18,7 @@ class UserController {
     this.router.get('/', this.getUsers.bind(this));
     this.router.post('/register', this.registerUser.bind(this));
     this.router.post('/login', this.loginUser.bind(this));
-    this.router.put('/', authMiddleware, this.updateUser.bind(this));
+    this.router.put('/:id', authMiddleware, this.updateUser.bind(this));
     this.router.get('/role', authMiddleware, this.getRole.bind(this));
   }
 
@@ -56,7 +56,6 @@ class UserController {
   async loginUser(req: Request, res: Response) {
     try {
       const SECRET_KEY = process.env.SECRET_KEY || 'generic';
-      const REFRESH_SECRET = process.env.REFRESH_SECRET || 'generic_refresh';
       const { email, password } = req.body;
       const user = await User.findOne({ email });
 
@@ -70,7 +69,7 @@ class UserController {
       }
 
       // Access token
-      const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: '7d' });
+      const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY);
 
       return res.status(200).send({ token });
     } catch (err: any) {
@@ -83,7 +82,7 @@ class UserController {
     try {
       const {id} = req.params;
       if (id && req.user.role !== 'admin') {
-
+        
       }
     } catch (err: any) {
       console.error(err.message)
@@ -93,7 +92,8 @@ class UserController {
   @LogRoute('HTTP Request')
   async getRole(req: Request,res: Response) {
     try {
-        return res.status(200).json(req.user.role);
+        const role = req.user.role
+        return res.status(200).json({role});
     } catch (err: any) {
       console.error(err.message)
       return res.status(500)

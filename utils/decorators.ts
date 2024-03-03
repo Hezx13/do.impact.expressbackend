@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 
-// Correctly typed decorator for method modification
 function LogRoute(message: string) {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
       const originalMethod = descriptor.value;
@@ -19,6 +18,7 @@ function LogRoute(message: string) {
         };
         const colorsRes: { [key: string]: string } = {
             2: '\x1b[32m', // Green
+            3: '\x1b[34m', // Blue
             4: '\x1b[33m', // Yellow
             5: '\x1b[31m', // Red
           };
@@ -30,7 +30,8 @@ function LogRoute(message: string) {
         const result = originalMethod.apply(this, args);
   
         res.on('finish', () => {
-            const colorRes = colorsRes[res.statusCode/100] || colorsRes.RESET;
+          const colorRes = colorsRes[res.statusCode/100] || colorsRes.RESET;
+            
           console.log(`\u001b[30mResponse Status: ${colorRes}${res.statusCode}${colors.RESET}`);
         });
   
