@@ -80,7 +80,6 @@ paths:
       parameters:  # Define path parameters here
         - in: path
           name: id
-          required: true
           schema:
             type: string
           description: The user ID

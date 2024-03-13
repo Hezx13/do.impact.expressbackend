@@ -1,0 +1,119 @@
+paths:
+  /event:
+    post:
+      tags:
+        - events
+      summary: Add a new event
+      description: Creates a new event
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '201':
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+    get:
+      tags:
+        - events
+      summary: Get a list of events
+      description: Returns a list of events
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+components:
+  schemas:
+    Ticket:
+        type: object
+        properties:
+          event:
+            type: object
+            properties:
+              _id:
+                type: string
+              name:
+                type: string
+          user:
+            type: object
+            properties:
+              _id:
+                type: string
+              name:
+                type: string
+          price:
+            type: number
+          status:
+            type: string
+            enum:
+              - purchased
+              - redeemed
+          purchaseTime:
+            type: string
+            format: date-time
+          redeemTime:
+            type: string
+            format: date-time
+          hash:
+            type: string
+          addAppleWallet:
+            type: string
+          addAGoogleWallet:
+            type: string
+    Event:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        speaker:
+          type: string
+        description:
+          type: string
+        summary:
+          type: string
+        location:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        participants:
+          $ref: '#/components/schemas/User'
+        visibility:
+          type: string
+        category:
+          type: string
+        tags:
+          type: array
+          items: 
+            type: string
+        price:
+          type: number
+        materials:
+            $ref: '#/components/schemas/Material'
+    Material:
+      type: object
+      properties:
+        name:
+          type: string
+        link:
+          type: string

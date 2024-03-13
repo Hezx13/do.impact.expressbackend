@@ -12,6 +12,7 @@ const eventSchema = new mongoose.Schema({
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     visibility: { type: String, required: true, enum: ['public', 'private', 'invite'], default: 'public'},
     category: {type: String, required: true },
+    tags: { type: [String], required: true },
     price: { type: Number, required: true },
     materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Material' }],
 });

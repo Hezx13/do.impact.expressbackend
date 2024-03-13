@@ -87,7 +87,7 @@ class UserController {
         if (email) update.email = email;
         if (name) update.name = name;
         if (socials) update.socials = socials;
-      if (id) {
+      if (id.length > 1) {
         if (req.user.role !== 'admin'){
           return res.status(403).send("Not enough priviliges")
         }

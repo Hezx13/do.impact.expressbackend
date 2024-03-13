@@ -24,8 +24,8 @@ function LogRoute(message: string) {
           };
   
         const color = colors[method] || colors.RESET;
-  
-        console.log(`\u001b[30m${message}: ${color}${method} ${req.path}${colors.RESET}`);
+          
+        console.log(`${color}${message}: ${method} ${req.path}${colors.RESET}`);
   
         const result = originalMethod.apply(this, args);
   
