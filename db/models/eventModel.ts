@@ -1,4 +1,12 @@
 import mongoose from 'mongoose';
+import { scheduler } from 'timers/promises';
+
+const scheduleSchema = new mongoose.Schema({
+    time: {type: Date, required: true},
+    event: { type: String, required: true },
+});
+
+const Schedule = mongoose.model('Schedule', scheduleSchema);
 
 const eventSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -9,6 +17,7 @@ const eventSchema = new mongoose.Schema({
     location: { type: String, required: true},
     startTime: { type: Date, required: true},
     endTime: { type: Date, required: true},
+    schedule: [{type: scheduleSchema}],
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     visibility: { type: String, required: true, enum: ['public', 'private', 'invite'], default: 'public'},
     category: {type: String, required: true },
@@ -18,5 +27,6 @@ const eventSchema = new mongoose.Schema({
 });
 
 const Event = mongoose.model('Event', eventSchema);
+
 
 export default Event;

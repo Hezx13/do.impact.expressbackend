@@ -1,4 +1,43 @@
 paths:
+  /event/{eventId}:
+    get:
+      summary: Get event details.
+      tags:
+        - events
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          type: string
+          description: Unique identifier of the event
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/components/schemas/Event'
+        '400':
+          description: Bad request - Event ID not provided
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+  /events/short:
+    get:
+      summary: Get a short list of events
+      tags:
+        - events
+      description: Retrieve a list of events with only their summary information
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EventShortList'
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
   /event:
     post:
       tags:
@@ -96,6 +135,10 @@ components:
         endTime:
           type: string
           format: date-time
+        schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
         participants:
           $ref: '#/components/schemas/User'
         visibility:
@@ -116,4 +159,11 @@ components:
         name:
           type: string
         link:
+          type: string
+    Schedule:
+      type: object
+      properties:
+        name:
+          type: string
+        event:
           type: string

@@ -13,6 +13,8 @@ class EventController {
     private initializeRoutes() {
         this.router.get('/', this.getEventList.bind(this));
         this.router.post('/',authMiddleware, this.addEvent.bind(this));
+        this.router.get('/:eventId', authMiddleware, this.getEvent.bind(this));
+        this.router.get('/short', this.getEventsShortList.bind(this));
       }
     @LogRoute('HTTP Request event')
     async getEventList(req: Request,res: Response){
@@ -20,6 +22,30 @@ class EventController {
             const eventList = await Event.find().lean();
             return res.status(200).json(eventList)
         } catch (err){
+            console.error(err);
+            return res.status(500).send('Internal server error');
+        }
+    }
+
+    @LogRoute('HTTP Request event')
+    async getEvent(req: Request, res: Response) {
+        const { eventId } = req.params;
+        if (!eventId) return res.status(400).send('Bad request');
+        try {
+            const event = await Event.findById(req.params.eventId).lean();
+            return res.status(200).json(event);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send('Internal server error');
+        }
+    }
+
+    @LogRoute('HTTP Request event')
+    async getEventsShortList(req: Request, res: Response) {
+        try {
+            const events = await Event.find().select(['name', 'title','summary', 'location','startTime', 'endTime', 'price']);
+            return res.status(200).json(events)
+        } catch (err) {
             console.error(err);
             return res.status(500).send('Internal server error');
         }
