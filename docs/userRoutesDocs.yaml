@@ -131,6 +131,31 @@ paths:
           description: token expired
         '500':
           description: Internal server error
+  /verifyPassword:
+    head:
+      summary: Verify User Password
+      description: Validates the password for the user identified by their ID in the request.
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: The password to verify.
+      responses:
+        '200':
+          description: Password verification successful.
+        '403':
+          description: Forbidden - Password does not match.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
 components:
   securitySchemes:
     bearerAuth:

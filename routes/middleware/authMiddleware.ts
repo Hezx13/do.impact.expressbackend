@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express';
+
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => { 
     const SECRET_KEY = process.env.SECRET_KEY || 'generic'
     try {

@@ -16,6 +16,7 @@ function LogRoute(message: string) {
           DELETE: '\x1b[31m', // Red
           RESET: '\x1b[0m' // Reset
         };
+        
         const colorsRes: { [key: string]: string } = {
             2: '\x1b[32m', // Green
             3: '\x1b[34m', // Blue

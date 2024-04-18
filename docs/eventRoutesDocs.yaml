@@ -21,7 +21,7 @@ paths:
           description: Internal server error
       security:
         - bearerAuth: []
-  /events/short:
+  /event/short:
     get:
       summary: Get a short list of events
       tags:
@@ -33,11 +33,24 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/EventShortList'
+              $ref: '#/components/schemas/Event'
         '500':
           description: Internal server error
-      security:
-        - bearerAuth: []
+  /event/upcoming:
+    get:
+      summary: Get upcoming event
+      tags:
+        - events
+      description: Retrieve a list of events with only their summary information
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Event'
+        '500':
+          description: Internal server error
   /event:
     post:
       tags:
@@ -141,7 +154,11 @@ components:
             $ref: '#/components/schemas/Schedule'
         participants:
           $ref: '#/components/schemas/User'
+        maxParticipants:
+         type: integer
         visibility:
+          type: string
+        status:
           type: string
         category:
           type: string

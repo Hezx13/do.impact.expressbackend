@@ -19,6 +19,8 @@ class UserController {
     this.router.get('/', this.getUsers.bind(this));
     this.router.post('/register', this.registerUser.bind(this));
     this.router.post('/login', this.loginUser.bind(this));
+    this.router.head('/verifyPassword', authMiddleware, this.verifyPassword.bind(this));
+    // this.router.head('/logout',authMiddleware, this.logoutUser.bind(this));
     this.router.put('/:id', authMiddleware, this.updateUser.bind(this));
     this.router.get('/role', authMiddleware, this.getRole.bind(this));
   }
@@ -118,7 +120,31 @@ class UserController {
       return res.status(500)
     }
   }
+
+  @LogRoute("HTTP Request user")
+  async verifyPassword (req: Request, res: Response) {
+
+    try{
+      const { password } = req.body;
+      const user = await User.findById(req.user.id);
+  
+  
+      const isMatch = bcrypt.compare(user.password, password)
+      if (!isMatch) {
+        return res.status(403).send();
+      }
+  
+      return res.status(200).send();
+
+    } catch (err) {
+      return res.status(500)
+    }
+    
+  }
 }
+
+
+
 
 const userController = new UserController();
 export default userController.router;

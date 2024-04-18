@@ -11,10 +11,16 @@ class EventController {
     }
 
     private initializeRoutes() {
+
+        //PUBLIC ROUTES
         this.router.get('/', this.getEventList.bind(this));
+        this.router.get('/short', this.getEventsShortList.bind(this));
+        this.router.get('/upcoming', this.getUpcomingEvent.bind(this));
+
+        //PROTECTED ROUTES
         this.router.post('/',authMiddleware, this.addEvent.bind(this));
         this.router.get('/:eventId', authMiddleware, this.getEvent.bind(this));
-        this.router.get('/short', this.getEventsShortList.bind(this));
+        this.router.patch('/:eventId', authMiddleware, this.updateEvent.bind(this));
       }
     @LogRoute('HTTP Request event')
     async getEventList(req: Request,res: Response){
@@ -45,6 +51,24 @@ class EventController {
         try {
             const events = await Event.find().select(['name', 'title','summary', 'location','startTime', 'endTime', 'price']);
             return res.status(200).json(events)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send('Internal server error');
+        }
+    }
+
+    @LogRoute("HTTP Request event")
+    async getUpcomingEvent(req: Request, res: Response) {
+        try {
+            const now = new Date();
+            console.log(now);
+            const nearestEvent = await Event.findOne({ startTime: { $gte: now } })
+                                            .sort({ startTime: 1 })
+                                            .lean();
+            if (!nearestEvent) {
+                return res.status(404).send('No upcoming events found.');
+            }
+            return res.status(200).json(nearestEvent);
         } catch (err) {
             console.error(err);
             return res.status(500).send('Internal server error');
@@ -93,6 +117,21 @@ class EventController {
             } catch (err) {
         
             }
+    }
+
+    @LogRoute("HTPP Request event")
+    async updateEvent(req: Request,res: Response){
+        const {eventId} = req.params;
+        const {updates} = req.body;
+        try {
+            const updatedResource = await Event.findByIdAndUpdate(eventId, updates, { new: true });
+            if (!updatedResource) {
+              return res.status(404).send();
+            }
+            return res.status(200).json(updatedResource);
+          } catch (error) {
+            res.status(500).send("Internal server error");
+          }
     }
 
 }
